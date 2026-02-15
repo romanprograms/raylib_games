@@ -1,40 +1,46 @@
-cmake_minimum_required(VERSION 3.24)
-project(flappy_bird)
-
+cmake_minimum_required(VERSION 4.2)
+project(flappy_bird LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 11)
-
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(FetchContent)
 
-set(RAYLIB_VERSION 4.5.0)
+# Use modern raylib version (CMake 4 compatible)
+set(RAYLIB_VERSION 5.5)
 
-
-FetchContent_Declare(
-  raylib
+FetchContent_Declare(raylib
   URL https://github.com/raysan5/raylib/archive/refs/tags/${RAYLIB_VERSION}.tar.gz
-      FIND_PACKAGE_ARGS
-      ${RAYLIB_VERSION}
-      EXACT)
+  DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+)
 
-set(BUILD_EXAMPLES
-    OFF
-    CACHE INTERNAL "")
+# Disable building raylib examples
+set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+endif()
+
 
 
 FetchContent_MakeAvailable(raylib)
 
-set(SOURCE_FILES src/Main.c)
+add_executable(${PROJECT_NAME}
+  src/Main.c
+)
 
+target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+# Silence GCC stringop overflow warnings coming from raylib's external deps
+if (CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  target_compile_options(raylib PRIVATE -Wno-stringop-overflow)
+endif()
 
-
-target_link_libraries(${PROJECT_NAME} raylib)
-
-# Checks if OSX and links appropriate frameworks (Only required on MacOS)
+# MacOS frameworks (still required)
 if(APPLE)
-  target_link_libraries(${PROJECT_NAME} "-framework IOKit")
-  target_link_libraries(${PROJECT_NAME} "-framework Cocoa")
-  target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
+  target_link_libraries(${PROJECT_NAME} PRIVATE
+    "-framework IOKit"
+    "-framework Cocoa"
+    "-framework OpenGL"
+  )
 endif()
