@@ -1,6 +1,33 @@
 #include "raylib.h"
 #include <stdio.h>
 
+void InitGame(void);
+
+// Initialization
+#define MAX_TUBES 100
+#define FLOPPY_RADIUS 24
+#define TUBES_WIDTH 80
+
+//-----------------------------------
+// Types and Structures definitions
+//-----------------------------------
+typedef struct Bird
+{
+  Vector2 position;
+  int radius;
+  Color color;
+} Bird;
+
+//---------------------------------
+// Global Variables Declaratin
+//---------------------------------
+static const int screenWidth = 800;
+static const int screenHeight = 450;
+
+static bool isGameOver = false;
+
+static Bird bird = {0};
+
 int main(void)
 {
   // Initialization
@@ -9,7 +36,7 @@ int main(void)
 
   InitWindow(screenWidth, screenHeight, "Flappy Bird made with Raylib");
 
-  Vector2 ballPosition = {(float)screenWidth / 2.0f, (float)screenHeight / 2.0f};
+  InitGame();
 
   SetTargetFPS(60);
   // Main game loop
@@ -17,24 +44,41 @@ int main(void)
   {
     // Update
     if (IsKeyDown(KEY_D))
-      ballPosition.x += 2.0f;
+      bird.position.x += 2.0f;
     if (IsKeyDown(KEY_A))
-      ballPosition.x -= 2.0f;
+      bird.position.x -= 2.0f;
     if (IsKeyDown(KEY_W))
-      ballPosition.y -= 2.0f;
+      bird.position.y -= 2.0f;
     if (IsKeyDown(KEY_S))
-      ballPosition.y += 2.0f;
+      bird.position.y += 2.0f;
 
     // Draw
     BeginDrawing();
     ClearBackground(RAYWHITE);
-    DrawText("This is where Flappy Bird Game will be drawn", 10, 10, 20,
-             DARKGRAY);
-    DrawCircleV(ballPosition, 50, MAROON);
+    DrawCircleV(bird.position, 25, MAROON);
+    DrawRectangle(200, 0, 50, 150, RED);
     EndDrawing();
   }
 
   CloseWindow();
 
   return 0;
+}
+
+void InitGame(void)
+{
+  bird.position = (Vector2){screenWidth / 2.0f, screenHeight / 2.0f};
+}
+
+void DrawGame(void)
+{
+}
+
+void UpdateGame(void)
+{
+}
+
+void UnloadGame(void)
+{
+  // TODO: Unload all dynamic data if it exists
 }
