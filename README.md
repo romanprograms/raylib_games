@@ -25,5 +25,5 @@ cmake --build build
 
 ```ps1
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-
+cd c:/dev/raylib_games/snake_simple && powershell -ExecutionPolicy Bypass -File build.ps1 2>&1
 ```

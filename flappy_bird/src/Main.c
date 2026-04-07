@@ -1,11 +1,9 @@
 #include "raylib.h"
 #include <stdio.h>
 
-void InitGame(void);
-
 // Initialization
 #define MAX_TUBES 100
-#define FLOPPY_RADIUS 24
+#define BIRD_RADIUS 24
 #define TUBES_WIDTH 80
 
 //-----------------------------------
@@ -25,8 +23,18 @@ static const int screenWidth = 800;
 static const int screenHeight = 450;
 
 static bool isGameOver = false;
+static float gravity = 1.0f;
 
 static Bird bird = {0};
+
+//------------------------------------------------------------------------------------
+// Module Functions Declaration (local)
+//------------------------------------------------------------------------------------
+static void InitGame(void);        // Initialize game
+static void UpdateGame(void);      // Update game (one frame)
+static void DrawGame(void);        // Draw game (one frame)
+static void UnloadGame(void);      // Unload game
+static void UpdateDrawFrame(void); // Update and Draw (one frame)
 
 int main(void)
 {
@@ -42,40 +50,46 @@ int main(void)
   // Main game loop
   while (!WindowShouldClose())
   {
-    // Update
-    if (IsKeyDown(KEY_D))
-      bird.position.x += 2.0f;
-    if (IsKeyDown(KEY_A))
-      bird.position.x -= 2.0f;
-    if (IsKeyDown(KEY_W))
-      bird.position.y -= 2.0f;
-    if (IsKeyDown(KEY_S))
-      bird.position.y += 2.0f;
-
-    // Draw
-    BeginDrawing();
-    ClearBackground(RAYWHITE);
-    DrawCircleV(bird.position, 25, MAROON);
-    DrawRectangle(200, 0, 50, 150, RED);
-    EndDrawing();
+    UpdateDrawFrame();
   }
 
-  CloseWindow();
+  // De-Initialization
+  UnloadGame(); // Close window and OpenGL context
+
+  CloseWindow(); // Close window and OpenGL context
 
   return 0;
 }
 
 void InitGame(void)
 {
-  bird.position = (Vector2){screenWidth / 2.0f, screenHeight / 2.0f};
+  bird.position = (Vector2){150, screenHeight / 2.0f};
+  bird.radius = BIRD_RADIUS;
+  bird.color = DARKGRAY;
+}
+
+void UpdateDrawFrame(void)
+{
+  UpdateGame();
+  DrawGame();
 }
 
 void DrawGame(void)
 {
+  BeginDrawing();
+  ClearBackground(RAYWHITE);
+  DrawCircleV(bird.position, bird.radius, bird.color);
+  DrawRectangle(screenWidth - 50, 0, 50, 150, RED);
+  EndDrawing();
 }
 
 void UpdateGame(void)
 {
+
+  if (IsKeyDown(KEY_SPACE))
+    bird.position.y -= 2.0f;
+
+  bird.position.y += gravity;
 }
 
 void UnloadGame(void)
