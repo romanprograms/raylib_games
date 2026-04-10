@@ -72,17 +72,26 @@ Vector2 get_unit_speed_vector(Direction direction)
   default:
     return (Vector2){0, 0};
   }
+
+  return speed_unit_vector;
 }
 
 void snake_move(Snake *s)
 {
   Vector2 unit_speed_vector = get_unit_speed_vector(s->direction);
 
-  for (size_t i = 0; i < s->size; i++)
+  size_t tail_index = s->head_index - s->size + 1;
+
+  // move body segments
+  for (size_t i = tail_index; i < s->head_index; i++)
   {
-    s->parts[i].x += s->speed * unit_speed_vector.x;
-    s->parts[i].y += s->speed * unit_speed_vector.y;
+    s->parts[i].x = s->parts[i + 1].x;
+    s->parts[i].y = s->parts[i + 1].y;
   }
+
+  // move head
+  s->parts[s->head_index].x += s->speed * unit_speed_vector.x;
+  s->parts[s->head_index].y += s->speed * unit_speed_vector.y;
 }
 
 void draw_snake(Snake *s)
