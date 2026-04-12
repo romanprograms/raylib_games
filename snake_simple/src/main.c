@@ -4,6 +4,8 @@
 #define SQUARE_SIDE 20
 #define INITIAL_SIZE 20
 #define INITIAL_SPEED 2
+#define SCREEN_WIDTH 1024
+#define SCREEN_HEIGHT 768
 
 const Vector2 HEAD_UP = {0.0f, -1.0f};
 const Vector2 HEAD_RIGHT = {1.0f, 0.0f};
@@ -24,23 +26,25 @@ typedef struct Snake
   size_t size;
   size_t head_index;
   Direction direction;
+  int accumulated_movement;
   int speed;
 } Snake;
 
-void snake_init(Snake *s, int screenWidth, int screenHeight)
+void snake_init(Snake *s)
 {
-  int head_x = screenWidth / 2;
+  int head_x = SCREEN_WIDTH / 2;
 
   s->size = INITIAL_SIZE;
   s->head_index = s->size - 1;
   s->direction = RIGHT;
+  s->accumulated_movement = 0;
   s->speed = INITIAL_SPEED;
 
   int tail_x = head_x - (s->size - 1) * SQUARE_SIDE;
 
-  for (size_t i = s->head_index; i <= s->head_index - s->size - 1; i--)
+  for (size_t i = 0; i <= s->head_index; i++)
   {
-    s->parts[i] = (Vector2){tail_x + i * SQUARE_SIDE, screenHeight / 2};
+    s->parts[i] = (Vector2){tail_x + i * SQUARE_SIDE, SCREEN_HEIGHT / 2};
   }
 }
 
@@ -82,21 +86,30 @@ void snake_move(Snake *s)
 
   size_t tail_index = s->head_index - s->size + 1;
 
-  // move body segments
-  for (size_t i = tail_index; i < s->head_index; i++)
-  {
-    s->parts[i].x = s->parts[i + 1].x;
-    s->parts[i].y = s->parts[i + 1].y;
-  }
-
   // move head
-  s->parts[s->head_index].x += s->speed * unit_speed_vector.x;
-  s->parts[s->head_index].y += s->speed * unit_speed_vector.y;
+  if (s->accumulated_movement == SQUARE_SIDE)
+  {
+    s->accumulated_movement = 0;
+    // move body segments
+    for (size_t i = 0; i < s->head_index; i++)
+    {
+      s->parts[i].x = s->parts[i + 1].x;
+      s->parts[i].y = s->parts[i + 1].y;
+    }
+    s->parts[s->head_index].x += s->speed * unit_speed_vector.x;
+    s->parts[s->head_index].y += s->speed * unit_speed_vector.y;
+  }
+  else
+  {
+    s->parts[s->head_index].x += s->speed * unit_speed_vector.x;
+    s->parts[s->head_index].y += s->speed * unit_speed_vector.y;
+    s->accumulated_movement += s->speed;
+  }
 }
 
 void draw_snake(Snake *s)
 {
-  for (size_t i = 0; i < s->size; i++)
+  for (size_t i = 0; i <= s->head_index; i++)
   {
     DrawRectangle(s->parts[i].x, s->parts[i].y, SQUARE_SIDE, SQUARE_SIDE, RAYWHITE);
   }
@@ -142,9 +155,9 @@ int main()
 
   Snake s;
 
-  snake_init(&s, screen_width, screen_height);
+  snake_init(&s);
 
-  InitWindow(screen_width, screen_height, "Snake Game");
+  InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Snake Game");
   SetTargetFPS(60);
 
   while (!WindowShouldClose())
