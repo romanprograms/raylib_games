@@ -22,7 +22,7 @@ Makefile
 flappy_bird/flappy_bird
 
 # IDE specific files
-.vscode/
+# .vscode/
 .idea/
 *.swp
 *.swo

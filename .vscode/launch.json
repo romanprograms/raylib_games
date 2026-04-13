@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Snake",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/snake_simple/build/snake_simple.exe",
+      "cwd": "${workspaceFolder}/snake_simple",
+      "MIMode": "gdb",
+      "miDebuggerPath": "C:/ProgramData/mingw64/mingw64/bin/gdb.exe"
+    }
+  ]
+}
