@@ -7,7 +7,7 @@
 #define SCREEN_WIDTH 2048
 #define SCREEN_HEIGHT 1024
 #define TARGET_FPS 60
-#define ARBITRARY_SNAKE_SIZE_MAX 200
+#define SNAKE_ARBITRARY_SIZE_MAX 200
 
 // TODO: do you need that ?
 const Vector2 HEAD_UP = {0.0f, -1.0f};
@@ -31,7 +31,11 @@ typedef struct SnakePart
 
 typedef struct Snake
 {
-  SnakePart parts[ARBITRARY_SNAKE_SIZE_MAX];
+  // to avoid using a vector or creating a singly/doubly
+  // linked list, we're just gonna use a fixed size
+  // array of sufficient length that we will make sure
+  // to never exceed.
+  SnakePart parts[SNAKE_ARBITRARY_SIZE_MAX];
   size_t size;
   size_t head_i;
   size_t tail_i;
