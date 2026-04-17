@@ -103,10 +103,15 @@ void Snake__ChangeHeadDirection(Snake *s, Direction direction)
   SnakeSegment neck = s->parts[s->head_idx - 1];
 
   bool hasHeadDirectionChanged = head.direction != direction;
+  bool hasHeadDirectionChangedInTheOppositeDirection =
+      (head.direction == RIGHT && direction == LEFT) || (head.direction == LEFT && direction == RIGHT) || (head.direction == DOWN && direction == UP) || (head.direction == UP && direction == DOWN);
+
+  bool hasNeckTheSamedirectionAsHead = head.direction == neck.direction;
 
   // only allow head to turn if the neck already
-  // follows the head in the same direction
-  if (head.direction == neck.direction && hasHeadDirectionChanged)
+  // follows the head in the same direction and the head
+  // is not turning 180 degrees (only allowed to turn 90 degrees)
+  if (hasNeckTheSamedirectionAsHead && hasHeadDirectionChanged && !hasHeadDirectionChangedInTheOppositeDirection)
   {
     s->parts[s->head_idx].direction = direction;
   }
