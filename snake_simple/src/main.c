@@ -3,8 +3,8 @@
 
 #define SNAKE_SEGMENT_SIZE 20
 #define INITIAL_SNAKE_SIZE 20;
-#define SNAKE_ARBITRARY_SIZE_MAX 200
-#define INITIAL_SPEED 1
+#define SNAKE_ARBITRARY_SIZE_MAX 1000
+#define INITIAL_SPEED 2
 #define SCREEN_WIDTH 2048
 #define SCREEN_HEIGHT 1024
 #define TARGET_FPS 60
@@ -93,6 +93,7 @@ Vector2 GetUnitSpeedVector(Direction direction)
 
 void Snake__ChangeHeadDirection(Snake *s, Direction direction)
 {
+
   if (s->size <= 1 && direction != s->parts[s->head_idx].direction)
   {
     s->parts[s->head_idx].direction = direction;
@@ -102,16 +103,21 @@ void Snake__ChangeHeadDirection(Snake *s, Direction direction)
   SnakeSegment head = s->parts[s->head_idx];
   SnakeSegment neck = s->parts[s->head_idx - 1];
 
-  bool hasHeadDirectionChanged = head.direction != direction;
+  // direction has not changed
+  if (head.direction == direction)
+  {
+    return;
+  }
+
   bool hasHeadDirectionChangedInTheOppositeDirection =
       (head.direction == RIGHT && direction == LEFT) || (head.direction == LEFT && direction == RIGHT) || (head.direction == DOWN && direction == UP) || (head.direction == UP && direction == DOWN);
 
-  bool hasNeckTheSamedirectionAsHead = head.direction == neck.direction;
+  bool hasNeckTheSameDirectionAsHead = head.direction == neck.direction;
 
   // only allow head to turn if the neck already
   // follows the head in the same direction and the head
   // is not turning 180 degrees (only allowed to turn 90 degrees)
-  if (hasNeckTheSamedirectionAsHead && hasHeadDirectionChanged && !hasHeadDirectionChangedInTheOppositeDirection)
+  if (hasNeckTheSameDirectionAsHead && !hasHeadDirectionChangedInTheOppositeDirection)
   {
     s->parts[s->head_idx].direction = direction;
   }
