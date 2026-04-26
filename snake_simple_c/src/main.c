@@ -15,7 +15,7 @@ static SDL_Renderer *renderer = NULL;
 /* This function runs once at startup. */
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
-  SDL_SetAppMetadata("Example HUMAN READABLE NAME", "1.0", "com.example.CATEGORY-NAME");
+  SDL_SetAppMetadata("Snake", "1.0", "snake");
 
   if (!SDL_Init(SDL_INIT_VIDEO))
   {
@@ -23,7 +23,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     return SDL_APP_FAILURE;
   }
 
-  if (!SDL_CreateWindowAndRenderer("examples/CATEGORY/NAME", 640, 480, 0, &window, &renderer))
+  if (!SDL_CreateWindowAndRenderer("Snake", 640, 480, 0, &window, &renderer))
   {
     SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
     return SDL_APP_FAILURE;
