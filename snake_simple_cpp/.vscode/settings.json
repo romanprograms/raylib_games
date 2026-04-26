@@ -1,0 +1,9 @@
+{
+    "cmake.configureArgs": [
+        "-DSDL3_DIR=C:/libs/SDL3-3.4.4/x86_64-w64-mingw32/lib/cmake/SDL3",
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
+    ],
+    "cmake.generator": "MinGW Makefiles",
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json"
+}
