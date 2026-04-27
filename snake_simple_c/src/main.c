@@ -8,6 +8,14 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 
+typedef struct Snake
+{
+  size_t size;
+  size_t head_index;
+  size_t tail_index;
+  float speed;
+} Snake;
+
 /* We will use this renderer to draw into this window every frame. */
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
